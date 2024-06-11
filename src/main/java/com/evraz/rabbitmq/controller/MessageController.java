@@ -16,7 +16,7 @@ public class MessageController {
 
     @PostMapping
     public String sendMessage(@RequestBody String message) {
-        messageSender.send(message);
+
         return "Message sent: " + message;
     }
 }
