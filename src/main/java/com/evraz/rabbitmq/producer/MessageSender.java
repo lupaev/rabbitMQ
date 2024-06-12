@@ -1,7 +1,5 @@
 package com.evraz.rabbitmq.producer;
 
-import com.evraz.rabbitmq.dto.CarDTO;
-import com.evraz.rabbitmq.entity.Car;
 import com.evraz.rabbitmq.entity.CarLoaded;
 import com.evraz.rabbitmq.entity.CarNotLoaded;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +12,11 @@ public class MessageSender {
 
     private final RabbitTemplate rabbitTemplate;
 
-    public void send(CarLoaded car, String routingKey) {
-        rabbitTemplate.convertAndSend(routingKey, car.toString());
+    public void send(String routingKey, CarLoaded car) {
+        rabbitTemplate.convertAndSend(routingKey, car);
     }
 
-    public void send(CarNotLoaded car, String routingKey) {
-        rabbitTemplate.convertAndSend(routingKey, car.toString());
+    public void send(String routingKey, CarNotLoaded car) {
+        rabbitTemplate.convertAndSend(routingKey, car);
     }
 }

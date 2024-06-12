@@ -52,16 +52,4 @@ public class RabbitConfig {
         return BindingBuilder.bind(queueForNotLoadedCar).to(exchange).with(routingKeyForCarNotLoaded);
     }
 
-//    @Bean
-//    public MessageConverter jsonMessageConverter() {
-//        return new Jackson2JsonMessageConverter();
-//    }
-//
-//    @Bean
-//    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-//        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-//        template.setMessageConverter(jsonMessageConverter());
-//        return template;
-//    }
-
 }

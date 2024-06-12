@@ -37,11 +37,11 @@ public class CarService {
 
         if (dto.getIsLoad() == 1) {
             CarLoaded entity = carLoadedMapper.toEntity(dto);
-            messageSender.send(entity, routingKeyForCarLoaded);
+            messageSender.send(routingKeyForCarLoaded, entity);
             log.info("Car sent: {}", entity);
         }
         CarNotLoaded entity = carNotLoadedMapper.toEntity(dto);
-        messageSender.send(entity, routingKeyForCarNotLoaded);
+        messageSender.send(routingKeyForCarNotLoaded, entity);
         log.info("Car sent: {}", entity);
 
     }
