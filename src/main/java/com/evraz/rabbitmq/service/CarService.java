@@ -33,18 +33,19 @@ public class CarService {
 
 
 
-    public void send() {
+    public void sendCar() {
         CarDTO dto = carGenerator.generate();
         log.info("CarDTO generated: {}", dto);
 
         if (dto.getIsLoad() == 1) {
             CarLoaded entity = carLoadedMapper.toEntity(dto);
-            messageSender.send(exchange,routingKeyForCarLoaded, entity);
-            log.info("Car sent: {}", entity);
+            messageSender.send(exchange, routingKeyForCarLoaded, entity);
+            log.info("CarLoaded sent: {}", entity);
+        } else {
+            CarNotLoaded entity = carNotLoadedMapper.toEntity(dto);
+            messageSender.send(exchange,routingKeyForCarNotLoaded, entity);
+            log.info("CarNotLoaded sent: {}", entity);
         }
-        CarNotLoaded entity = carNotLoadedMapper.toEntity(dto);
-        messageSender.send(exchange,routingKeyForCarNotLoaded, entity);
-        log.info("Car sent: {}", entity);
 
     }
 }

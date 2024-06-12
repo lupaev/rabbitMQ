@@ -7,6 +7,7 @@ import com.evraz.rabbitmq.repository.CarNotLoadedRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,17 +15,24 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MessageReceiver {
 
+
+    @Value("${rabbitmq.queue.name.car.loaded}")
+    private String queueForLoadedCar;
+
+    @Value("${rabbitmq.queue.name.car.not.loaded}")
+    private String queueForNotLoadedCar;
+
     private final CarNotLoadedRepository carNotLoadedRepository;
     private final CarLoadedRepository carLoadedRepository;
 
-    @RabbitListener(queues = {"queue"})
+    @RabbitListener(queues = {"${rabbitmq.queue.name.car.loaded}"})
     public void receiveCarLoaded(CarLoaded carLoaded) {
         log.info("CarLoaded received: {}", carLoaded);
         CarLoaded save = carLoadedRepository.save(carLoaded);
         log.info("CarLoaded saved: {}", save);
     }
 
-    @RabbitListener(queues = {"queue"})
+    @RabbitListener(queues = {"${rabbitmq.queue.name.car.not.loaded}"})
     public void receiveCarNotLoaded(CarNotLoaded carNotLoaded) {
         log.info("CarNotLoaded received: {}", carNotLoaded);
         CarNotLoaded save = carNotLoadedRepository.save(carNotLoaded);

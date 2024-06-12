@@ -15,8 +15,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    @Value("${rabbitmq.queue.name}")
-    private String queue;
+    @Value("${rabbitmq.queue.name.car.loaded}")
+    private String queueForLoadedCar;
+
+    @Value("${rabbitmq.queue.name.car.not.loaded}")
+    private String queueForNotLoadedCar;
 
     @Value("${rabbitmq.exchange.name}")
     private String exchange;
@@ -28,8 +31,13 @@ public class RabbitConfig {
     private String routingKeyForCarNotLoaded;
 
     @Bean
-    public Queue queue() {
-        return new Queue(queue, false);
+    public Queue queueForLoadedCar() {
+        return new Queue(queueForLoadedCar, false);
+    }
+
+    @Bean
+    public Queue queueForNotLoadedCar() {
+        return new Queue(queueForNotLoadedCar, false);
     }
 
     @Bean
@@ -39,12 +47,12 @@ public class RabbitConfig {
 
     @Bean
     public Binding bindingForLoadedCar() {
-        return BindingBuilder.bind(queue()).to(exchange()).with(routingKeyForCarLoaded);
+        return BindingBuilder.bind(queueForLoadedCar()).to(exchange()).with(routingKeyForCarLoaded);
     }
 
     @Bean
     public Binding bindingForNotLoadedCar() {
-        return BindingBuilder.bind(queue()).to(exchange()).with(routingKeyForCarNotLoaded);
+        return BindingBuilder.bind(queueForNotLoadedCar()).to(exchange()).with(routingKeyForCarNotLoaded);
     }
 
 

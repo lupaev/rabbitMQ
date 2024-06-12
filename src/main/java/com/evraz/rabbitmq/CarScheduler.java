@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 @RequiredArgsConstructor
 @Slf4j
-public class CarGeneratorScheduler {
+public class CarScheduler {
 
     private final CarService carService;
 
     @Scheduled(fixedRate = 10000)
     public void run() {
         try {
-            carService.send();
+            carService.sendCar();
         } catch (Exception error) {
             log.error(error.getMessage());
         }
