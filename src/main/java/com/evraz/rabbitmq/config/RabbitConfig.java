@@ -27,29 +27,47 @@ public class RabbitConfig {
     @Value("${routing.key.cnl}")
     private String routingKeyForCarNotLoaded;
 
+//    @Bean
+//    public Queue queueForLoadedCar() {
+//        return new Queue(queueForLoadedCar, false);
+//    }
+//
+//    @Bean
+//    public Queue queueForNotLoadedCar() {
+//        return new Queue(queueForNotLoadedCar, false);
+//    }
+
     @Bean
-    public Queue queueForLoadedCar() {
-        return new Queue(queueForLoadedCar, false);
+    public Queue queue() {
+        return new Queue("queue", false);
     }
 
     @Bean
-    public Queue queueForNotLoadedCar() {
-        return new Queue(queueForNotLoadedCar, false);
+    public TopicExchange exchange() {
+        return new TopicExchange("car", false, false);
     }
 
     @Bean
-    public DirectExchange exchange() {
-        return new DirectExchange(carExchange, false, false);
+    public Binding bindingForLoadedCar() {
+        return BindingBuilder.bind(queue()).to(exchange()).with("car.loaded");
     }
 
     @Bean
-    public Binding bindingFirstType(Queue queueForLoadedCar, DirectExchange exchange) {
-        return BindingBuilder.bind(queueForLoadedCar).to(exchange).with(routingKeyForCarLoaded);
+    public Binding bindingForNotLoadedCar() {
+        return BindingBuilder.bind(queue()).to(exchange()).with("car.not.loaded");
+    }
+
+
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public Binding bindingSecondType(Queue queueForNotLoadedCar, DirectExchange exchange) {
-        return BindingBuilder.bind(queueForNotLoadedCar).to(exchange).with(routingKeyForCarNotLoaded);
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(jsonMessageConverter());
+        return template;
     }
 
 }
