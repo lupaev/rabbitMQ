@@ -1,27 +1,16 @@
-# Getting Started
+### Сервис по распределению вагонов через RabbitMQ
+### Функционал:
+Получаемые вагоны разпределяются по очередям RabbitMQ, после получения уже 
+распределенных вагонов  происходит сохранение в БД.
 
-### Reference Documentation
+### Используемые технологии:
+- Java 17
+- Spring Boot 3.3.0
+- Postgres 16
+- Liquibase 4.27
+- MupStruct 1.5.5
+- Lombok 1.18.28
+- Gradle 8.7
+- RabbitMQ 3.13.3
 
-For further reference, please consider the following sections:
-
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.3.0/gradle-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.3.0/gradle-plugin/reference/html/#build-image)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/3.3.0/reference/htmlsingle/index.html#data.sql.jpa-and-spring-data)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/3.3.0/reference/htmlsingle/index.html#web)
-
-### Guides
-
-The following guides illustrate how to use some features concretely:
-
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
-
-### Additional Links
-
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
 
