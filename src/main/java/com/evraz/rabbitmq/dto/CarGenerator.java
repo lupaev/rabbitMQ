@@ -10,13 +10,15 @@ import java.util.Random;
 @Component
 public class CarGenerator {
 
+    private final Random random = new Random();
+
     public CarDTO generate() {
         CarDTO dto = new CarDTO();
         dto.setCarNum(RandomStringUtils.randomAlphanumeric(10));
         dto.setInvoiceNum(RandomStringUtils.randomAlphanumeric(10));
-        dto.setShipDate(LocalDate.now().minusDays(new Random().nextInt(365)));
+        dto.setShipDate(LocalDate.now().minusDays(random.nextInt(365)));
         dto.setContractNum(RandomStringUtils.randomAlphanumeric(10));
-        dto.setIsLoad(new Random().nextInt(2));
+        dto.setIsLoad(random.nextInt(2));
         return dto;
     }
 }

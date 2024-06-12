@@ -1,6 +1,9 @@
 package com.evraz.rabbitmq.config;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -12,49 +15,36 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    @Value("${queue.for.loaded.car}")
-    private String queueForLoadedCar;
+    @Value("${rabbitmq.queue.name}")
+    private String queue;
 
-    @Value("${queue.for.not.loaded.car}")
-    private String queueForNotLoadedCar;
+    @Value("${rabbitmq.exchange.name}")
+    private String exchange;
 
-    @Value("${queue.exchange}")
-    private String carExchange;
-
-    @Value("${routing.key.cl}")
+    @Value("${rabbitmq.routing.key.cl}")
     private String routingKeyForCarLoaded;
 
-    @Value("${routing.key.cnl}")
+    @Value("${rabbitmq.routing.key.cnl}")
     private String routingKeyForCarNotLoaded;
-
-//    @Bean
-//    public Queue queueForLoadedCar() {
-//        return new Queue(queueForLoadedCar, false);
-//    }
-//
-//    @Bean
-//    public Queue queueForNotLoadedCar() {
-//        return new Queue(queueForNotLoadedCar, false);
-//    }
 
     @Bean
     public Queue queue() {
-        return new Queue("queue", false);
+        return new Queue(queue, false);
     }
 
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange("car", false, false);
+        return new TopicExchange(exchange, false, false);
     }
 
     @Bean
     public Binding bindingForLoadedCar() {
-        return BindingBuilder.bind(queue()).to(exchange()).with("car.loaded");
+        return BindingBuilder.bind(queue()).to(exchange()).with(routingKeyForCarLoaded);
     }
 
     @Bean
     public Binding bindingForNotLoadedCar() {
-        return BindingBuilder.bind(queue()).to(exchange()).with("car.not.loaded");
+        return BindingBuilder.bind(queue()).to(exchange()).with(routingKeyForCarNotLoaded);
     }
 
 

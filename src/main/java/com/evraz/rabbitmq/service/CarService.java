@@ -8,7 +8,6 @@ import com.evraz.rabbitmq.mapper.CarLoadedMapper;
 import com.evraz.rabbitmq.mapper.CarNotLoadedMapper;
 import com.evraz.rabbitmq.producer.MessageSender;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,10 +17,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CarService {
 
-    @Value("${routing.key.cl}")
+    @Value("${rabbitmq.exchange.name}")
+    private String exchange;
+
+    @Value("${rabbitmq.routing.key.cl}")
     private String routingKeyForCarLoaded;
 
-    @Value("${routing.key.cnl}")
+    @Value("${rabbitmq.routing.key.cnl}")
     private String routingKeyForCarNotLoaded;
 
     private final CarGenerator carGenerator;
@@ -37,11 +39,11 @@ public class CarService {
 
         if (dto.getIsLoad() == 1) {
             CarLoaded entity = carLoadedMapper.toEntity(dto);
-            messageSender.send("car","car.loaded", entity);
+            messageSender.send(exchange,routingKeyForCarLoaded, entity);
             log.info("Car sent: {}", entity);
         }
         CarNotLoaded entity = carNotLoadedMapper.toEntity(dto);
-        messageSender.send("car","car.not.loaded", entity);
+        messageSender.send(exchange,routingKeyForCarNotLoaded, entity);
         log.info("Car sent: {}", entity);
 
     }
