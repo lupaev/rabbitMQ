@@ -15,7 +15,7 @@ public class CarGenerator {
     public CarDTO generate() {
         CarDTO dto = new CarDTO();
         dto.setCarNum(RandomStringUtils.randomAlphanumeric(10));
-        dto.setInvoiceNum(RandomStringUtils.randomAlphanumeric(10));
+        dto.setInvoiceNum(RandomStringUtils.randomAlphabetic(10));
         dto.setShipDate(LocalDate.now().minusDays(random.nextInt(365)));
         dto.setContractNum(RandomStringUtils.randomAlphanumeric(10));
         dto.setIsLoad(random.nextInt(2));

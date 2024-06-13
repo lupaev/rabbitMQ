@@ -1,9 +1,6 @@
 package com.evraz.rabbitmq.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -21,8 +18,8 @@ public class RabbitConfig {
     @Value("${rabbitmq.queue.name.car.not.loaded}")
     private String queueForNotLoadedCar;
 
-    @Value("${rabbitmq.exchange.name}")
-    private String exchange;
+    @Value("${rabbitmq.direct.exchange.name}")
+    private String directExchangeName;
 
     @Value("${rabbitmq.routing.key.cl}")
     private String routingKeyForCarLoaded;
@@ -30,29 +27,66 @@ public class RabbitConfig {
     @Value("${rabbitmq.routing.key.cnl}")
     private String routingKeyForCarNotLoaded;
 
+
+
+    @Value("${rabbitmq.fanout.exchange.name}")
+    private String fanoutExchangeName;
+
+    @Value("${rabbitmq.queue.name.car.factory.one}")
+    private String queueForFactoryOne;
+
+    @Value("${rabbitmq.queue.name.car.factory.two}")
+    private String queueForFactoryTwo;
+
     @Bean
     public Queue queueForLoadedCar() {
-        return new Queue(queueForLoadedCar, false);
+        return new Queue(queueForLoadedCar, true);
     }
 
     @Bean
     public Queue queueForNotLoadedCar() {
-        return new Queue(queueForNotLoadedCar, false);
+        return new Queue(queueForNotLoadedCar, true);
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(exchange, false, false);
+    public Queue queueForFactoryOne() {
+        return new Queue(queueForFactoryOne, true);
+    }
+
+    @Bean
+    public Queue queueForFactoryTwo() {
+        return new Queue(queueForFactoryTwo, true);
+    }
+
+    @Bean
+    public DirectExchange direct() {
+        return new DirectExchange(directExchangeName, true, false);
+    }
+
+    @Bean
+    public FanoutExchange fanoutExchange() {
+        return new FanoutExchange(fanoutExchangeName, true, false);
+    }
+
+
+    @Bean
+    public Binding bindingForFactoryOne() {
+        return BindingBuilder.bind(queueForFactoryOne()).to(fanoutExchange());
+    }
+
+    @Bean
+    public Binding bindingForFactoryTwo() {
+        return BindingBuilder.bind(queueForFactoryTwo()).to(fanoutExchange());
     }
 
     @Bean
     public Binding bindingForLoadedCar() {
-        return BindingBuilder.bind(queueForLoadedCar()).to(exchange()).with(routingKeyForCarLoaded);
+        return BindingBuilder.bind(queueForLoadedCar()).to(direct()).with(routingKeyForCarLoaded);
     }
 
     @Bean
     public Binding bindingForNotLoadedCar() {
-        return BindingBuilder.bind(queueForNotLoadedCar()).to(exchange()).with(routingKeyForCarNotLoaded);
+        return BindingBuilder.bind(queueForNotLoadedCar()).to(direct()).with(routingKeyForCarNotLoaded);
     }
 
 
