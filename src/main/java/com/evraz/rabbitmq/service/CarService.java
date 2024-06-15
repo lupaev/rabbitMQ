@@ -35,6 +35,13 @@ public class CarService {
     @Value("${rabbitmq.routing.key.cnl}")
     private String routingKeyForCarNotLoaded;
 
+    @Value("${rabbitmq.topic.exchange.name}")
+    private String topicExchangeName;
+
+    @Value("${rabbitmq.routing.key}")
+    private String routingKeyForLoadedCar;
+
+
     private final CarGenerator carGenerator;
     private final MessageSender messageSender;
     private final CarLoadedMapper carLoadedMapper;
@@ -51,6 +58,7 @@ public class CarService {
         if (dto.getIsLoad() == 1) {
             CarLoaded entity = carLoadedMapper.toEntity(dto);
             messageSender.send(directExchangeName, routingKeyForCarLoaded, entity);
+            messageSender.send(topicExchangeName, routingKeyForLoadedCar, entity);
             log.info("CarLoaded sent: {}", entity);
         } else {
             CarNotLoaded entity = carNotLoadedMapper.toEntity(dto);

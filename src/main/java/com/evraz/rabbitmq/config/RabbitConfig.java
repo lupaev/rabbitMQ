@@ -1,5 +1,6 @@
 package com.evraz.rabbitmq.config;
 
+import com.rabbitmq.client.AMQP;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
+    //direct
     @Value("${rabbitmq.queue.name.car.loaded}")
     private String queueForLoadedCar;
 
@@ -27,8 +29,7 @@ public class RabbitConfig {
     @Value("${rabbitmq.routing.key.cnl}")
     private String routingKeyForCarNotLoaded;
 
-
-
+    //fanout
     @Value("${rabbitmq.fanout.exchange.name}")
     private String fanoutExchangeName;
 
@@ -37,6 +38,18 @@ public class RabbitConfig {
 
     @Value("${rabbitmq.queue.name.car.factory.two}")
     private String queueForFactoryTwo;
+
+    //topic
+    @Value("${rabbitmq.topic.exchange.name}")
+    private String topicExchangeName;
+
+    @Value("${rabbitmq.queue.name.car.topic}")
+    private String queueForCar;
+
+    @Value("${rabbitmq.routing.key}")
+    private String routingKeyForLoadedCar;
+
+
 
     @Bean
     public Queue queueForLoadedCar() {
@@ -59,6 +72,11 @@ public class RabbitConfig {
     }
 
     @Bean
+    public Queue queueCar() {
+        return new Queue(queueForCar, true);
+    }
+
+    @Bean
     public DirectExchange direct() {
         return new DirectExchange(directExchangeName, true, false);
     }
@@ -66,6 +84,11 @@ public class RabbitConfig {
     @Bean
     public FanoutExchange fanoutExchange() {
         return new FanoutExchange(fanoutExchangeName, true, false);
+    }
+
+    @Bean
+    public TopicExchange topicExchange() {
+        return new TopicExchange(topicExchangeName, true, false);
     }
 
 
@@ -87,6 +110,11 @@ public class RabbitConfig {
     @Bean
     public Binding bindingForNotLoadedCar() {
         return BindingBuilder.bind(queueForNotLoadedCar()).to(direct()).with(routingKeyForCarNotLoaded);
+    }
+
+    @Bean
+    public Binding bindingForCar() {
+        return BindingBuilder.bind(queueCar()).to(topicExchange()).with(routingKeyForLoadedCar);
     }
 
 

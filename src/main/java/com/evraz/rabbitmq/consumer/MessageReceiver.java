@@ -43,4 +43,14 @@ public class MessageReceiver {
         log.info("CarNum saved: {}", list);
     }
 
+
+    @RabbitListener(queues = {"${rabbitmq.queue.name.car.topic}"})
+    public void receiveLoadedCar(CarLoaded carLoaded) {
+        log.info("CarLoaded received: {}", carLoaded);
+        CarLoaded car = carLoadedRepository.save(carLoaded);
+        log.info("CarLoaded saved: {}", car);
+    }
+
+
+
 }
