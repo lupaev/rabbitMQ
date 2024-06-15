@@ -51,6 +51,13 @@ public class MessageReceiver {
         log.info("CarLoaded saved: {}", car);
     }
 
+    @RabbitListener(queues = {"${rabbitmq.queue.name.car.header}"})
+    public void receiveLoadedCarHeader(CarLoaded carLoaded) {
+        log.info("CarLoaded received: {}", carLoaded);
+        CarLoaded car = carLoadedRepository.save(carLoaded);
+        log.info("CarLoaded saved: {}", car);
+    }
+
 
 
 }

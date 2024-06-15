@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,9 @@ public class CarService {
     @Value("${rabbitmq.routing.key}")
     private String routingKeyForLoadedCar;
 
+    @Value("${rabbitmq.header.exchange.name}")
+    private String headerExchangeName;
+
 
     private final CarGenerator carGenerator;
     private final MessageSender messageSender;
@@ -59,6 +63,7 @@ public class CarService {
             CarLoaded entity = carLoadedMapper.toEntity(dto);
             messageSender.send(directExchangeName, routingKeyForCarLoaded, entity);
             messageSender.send(topicExchangeName, routingKeyForLoadedCar, entity);
+            messageSender.send(headerExchangeName, entity, Map.of("isLoad", entity.getIsLoad().toString()));
             log.info("CarLoaded sent: {}", entity);
         } else {
             CarNotLoaded entity = carNotLoadedMapper.toEntity(dto);

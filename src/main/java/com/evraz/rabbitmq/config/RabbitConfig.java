@@ -1,6 +1,5 @@
 package com.evraz.rabbitmq.config;
 
-import com.rabbitmq.client.AMQP;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -49,8 +48,16 @@ public class RabbitConfig {
     @Value("${rabbitmq.routing.key}")
     private String routingKeyForLoadedCar;
 
+    //headers
+    @Value("${rabbitmq.header.exchange.name}")
+    private String headerExchangeName;
+
+    @Value("${rabbitmq.queue.name.car.header}")
+    private String queueForCarHeader;
 
 
+
+    //Queue
     @Bean
     public Queue queueForLoadedCar() {
         return new Queue(queueForLoadedCar, true);
@@ -77,7 +84,14 @@ public class RabbitConfig {
     }
 
     @Bean
-    public DirectExchange direct() {
+    public Queue queueCarHeader() {
+        return new Queue(queueForCarHeader, true);
+    }
+
+
+    //Exchange
+    @Bean
+    public DirectExchange directExchange() {
         return new DirectExchange(directExchangeName, true, false);
     }
 
@@ -91,7 +105,12 @@ public class RabbitConfig {
         return new TopicExchange(topicExchangeName, true, false);
     }
 
+    @Bean
+    public HeadersExchange headersExchange() {
+        return new HeadersExchange(headerExchangeName, true, false);
+    }
 
+    //Binding
     @Bean
     public Binding bindingForFactoryOne() {
         return BindingBuilder.bind(queueForFactoryOne()).to(fanoutExchange());
@@ -104,17 +123,22 @@ public class RabbitConfig {
 
     @Bean
     public Binding bindingForLoadedCar() {
-        return BindingBuilder.bind(queueForLoadedCar()).to(direct()).with(routingKeyForCarLoaded);
+        return BindingBuilder.bind(queueForLoadedCar()).to(directExchange()).with(routingKeyForCarLoaded);
     }
 
     @Bean
     public Binding bindingForNotLoadedCar() {
-        return BindingBuilder.bind(queueForNotLoadedCar()).to(direct()).with(routingKeyForCarNotLoaded);
+        return BindingBuilder.bind(queueForNotLoadedCar()).to(directExchange()).with(routingKeyForCarNotLoaded);
     }
 
     @Bean
     public Binding bindingForCar() {
         return BindingBuilder.bind(queueCar()).to(topicExchange()).with(routingKeyForLoadedCar);
+    }
+
+    @Bean
+    public Binding bindingForCarHeader() {
+        return BindingBuilder.bind(queueCarHeader()).to(headersExchange()).where("isLoad").matches("1");
     }
 
 
