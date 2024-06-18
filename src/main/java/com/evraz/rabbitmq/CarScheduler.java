@@ -17,7 +17,7 @@ public class CarScheduler {
 
     private final CarService carService;
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(timeUnit = TimeUnit.SECONDS, fixedRate = 20)
     public void run1() {
         try {
             carService.sendCar();
