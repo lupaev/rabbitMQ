@@ -7,6 +7,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 @EnableScheduling
 @RequiredArgsConstructor
@@ -15,10 +17,19 @@ public class CarScheduler {
 
     private final CarService carService;
 
-    @Scheduled(fixedRate = 10000)
-    public void run() {
+    @Scheduled(timeUnit = TimeUnit.SECONDS, fixedRate = 20)
+    public void run1() {
         try {
             carService.sendCar();
+        } catch (Exception error) {
+            log.error(error.getMessage());
+        }
+    }
+
+    @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 1)
+    public void run2() {
+        try {
+            carService.sendCarNumber();
         } catch (Exception error) {
             log.error(error.getMessage());
         }
